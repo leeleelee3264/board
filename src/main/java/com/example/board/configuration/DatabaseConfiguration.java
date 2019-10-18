@@ -14,7 +14,7 @@ import org.springframework.core.io.Resource;
 import javax.sql.DataSource;
 
 @Configuration
-@PropertySource("classpath:/application.properties")
+//@PropertySource("classpath:/application.properties")
 public class DatabaseConfiguration {
 
     @Autowired
@@ -24,8 +24,8 @@ public class DatabaseConfiguration {
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
-        sqlSessionFactoryBean.setMapperLocations(applicationContext.getResource("classpath:/mapper/**/sql-*.xml"));
-        sqlSessionFactoryBean.setConfigLocation((Resource) mybatisConfig());
+       // sqlSessionFactoryBean.setMapperLocations(applicationContext.getResource("classpath:/mapper/**/*.xml"));
+        sqlSessionFactoryBean.setConfiguration(mybatisConfig());
 
         return sqlSessionFactoryBean.getObject();
     }
