@@ -1,8 +1,12 @@
 package com.example.board.board.dto;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Data
+@Getter
+@Setter
 public class BoardDto {
     private int boardIdx;
     private String title;

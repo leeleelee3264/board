@@ -16,8 +16,9 @@ public class BoardMapper {
     }
 }
 */
-@Repository
+
 @Mapper
+@Repository
 public interface BoardMapper {
     List<BoardDto> selectBoardList() throws Exception;
 

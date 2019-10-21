@@ -9,36 +9,47 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.io.Resource;
 
 import javax.sql.DataSource;
 
 @Configuration
-//@PropertySource("classpath:/application.properties")
+@PropertySource("classpath:/application.properties")
 public class DatabaseConfiguration {
 
     @Autowired
     private ApplicationContext applicationContext;
 
+   /* @Bean
+    @ConfigurationProperties(prefix="spring.datasource.hikari")
+    public HikariConfig hikariConfig() {
+        return new HikariConfig();
+    }*/
+
     @Bean
-    public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
+    @ConfigurationProperties(prefix="mybatis.configuration")
+    public org.apache.ibatis.session.Configuration mybatisConfig(){
+        return new org.apache.ibatis.session.Configuration();
+    }
+
+    //여기 나중에 문제가 될 것 같음음
+  /*  @Bean
+    public DataSource dataSource() throws Exception{
+        DataSource dataSource = new HikariDataSource(hikariConfig());
+        return dataSource;
+    }*/
+
+    @Bean
+    public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception{
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
-       // sqlSessionFactoryBean.setMapperLocations(applicationContext.getResource("classpath:/mapper/**/*.xml"));
+        sqlSessionFactoryBean.setMapperLocations(applicationContext.getResources("classpath:/mapper/**/sql-*.xml"));
         sqlSessionFactoryBean.setConfiguration(mybatisConfig());
 
         return sqlSessionFactoryBean.getObject();
     }
 
     @Bean
-    public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
+    public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory){
         return new SqlSessionTemplate(sqlSessionFactory);
     }
-
-    @Bean
-    @ConfigurationProperties(prefix="mybatis.configuration")
-    public org.apache.ibatis.session.Configuration mybatisConfig() {
-        return new org.apache.ibatis.session.Configuration();
-    }
-
 }
